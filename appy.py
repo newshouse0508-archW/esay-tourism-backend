@@ -5,6 +5,9 @@ from datetime import datetime, date
 
 app = Flask(__name__)
 CORS(app)
+@app.route("/")
+def home():
+    return "Easy Tourism Backend is Running"
 
 # --------------------------
 # DATABASE INIT
@@ -109,3 +112,4 @@ def today_visits():
 # RUN SERVER
 # --------------------------
 app.run(host="0.0.0.0", port=10000)
+
