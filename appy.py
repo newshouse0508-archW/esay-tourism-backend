@@ -1,17 +1,21 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
-from datetime import datetime, date
+from datetime import date, datetime
 
 app = Flask(__name__)
 CORS(app)
+
+# -------------------------
+# HOME ROUTE (VERY IMPORTANT)
+# -------------------------
 @app.route("/")
 def home():
     return "Easy Tourism Backend is Running"
 
-# --------------------------
-# DATABASE INIT
-# --------------------------
+# -------------------------
+# INIT DATABASE
+# -------------------------
 def init_db():
     conn = sqlite3.connect("tourism.db")
     cur = conn.cursor()
@@ -31,12 +35,13 @@ def init_db():
 
 init_db()
 
-# --------------------------
+# -------------------------
 # ADD VISIT
-# --------------------------
+# -------------------------
 @app.route("/add_visit", methods=["POST"])
 def add_visit():
     data = request.get_json()
+
     place_code = data.get("place_code")
     people_count = data.get("people_count")
 
@@ -54,11 +59,11 @@ def add_visit():
     conn.commit()
     conn.close()
 
-    return jsonify({"message":"Visit Added Successfully"})
+    return jsonify({"message": "Visit Added Successfully"})
 
-# --------------------------
+# -------------------------
 # ALL VISITS
-# --------------------------
+# -------------------------
 @app.route("/all_visits")
 def all_visits():
     conn = sqlite3.connect("tourism.db")
@@ -66,9 +71,10 @@ def all_visits():
 
     cur.execute("SELECT place_code, people_count, visit_date, visit_time FROM visits")
     rows = cur.fetchall()
+
     conn.close()
 
-    data=[]
+    data = []
     for r in rows:
         data.append({
             "place_code": r[0],
@@ -79,9 +85,9 @@ def all_visits():
 
     return jsonify(data)
 
-# --------------------------
+# -------------------------
 # TODAY VISITS
-# --------------------------
+# -------------------------
 @app.route("/today_visits")
 def today_visits():
     today = date.today().isoformat()
@@ -92,12 +98,12 @@ def today_visits():
     cur.execute("""
         SELECT place_code, people_count, visit_date, visit_time
         FROM visits WHERE visit_date=?
-    """,(today,))
+    """, (today,))
 
     rows = cur.fetchall()
     conn.close()
 
-    data=[]
+    data = []
     for r in rows:
         data.append({
             "place_code": r[0],
@@ -108,8 +114,8 @@ def today_visits():
 
     return jsonify(data)
 
-# --------------------------
+# -------------------------
 # RUN SERVER
-# --------------------------
-app.run(host="0.0.0.0", port=10000)
-
+# -------------------------
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
