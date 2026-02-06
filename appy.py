@@ -120,4 +120,5 @@ def crowd_status(place_code):
 
 # Run the app if this file is executed directly
 if __name__ == '__main__':
-    app.run(debug=True)  # Debug mode for development
+
+    app.run(host="0.0.0.0", port=10000)  # Debug mode for development
